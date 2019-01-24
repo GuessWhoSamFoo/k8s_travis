@@ -1,4 +1,6 @@
-sudo: required
+os:
+  - linux
+  - windows
 
 language: go
 go:
@@ -11,6 +13,7 @@ before_script:
   - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.13.2/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
   - go get sigs.k8s.io/kind
   - kind create cluster
+  - export KUBECONFIG="$(kind get kubeconfig-path --name="1")"
 
 script:
   - kubectl cluster-info
