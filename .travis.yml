@@ -16,9 +16,12 @@ matrix:
     - os: windows
       before_script:
         - choco install kubernetes-cli -y
-        - go get sigs.k8s.io/kind
-        - kind create cluster
+        - $TRAVIS_BUILD_DIR/kind-windows-amd64 create cluster
         - export KUBECONFIG="$(kind get kubeconfig-path --name="1")"
 
 script:
   - kubectl cluster-info
+
+notifications:
+  email: false
+
