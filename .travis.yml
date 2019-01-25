@@ -1,7 +1,3 @@
-os:
-  - linux
-  - windows
-
 language: go
 go:
   - "1.11"
@@ -9,11 +5,20 @@ go:
 service:
   - docker
 
-before_script:
-  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.13.2/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
-  - go get sigs.k8s.io/kind
-  - kind create cluster
-  - export KUBECONFIG="$(kind get kubeconfig-path --name="1")"
+matrix:
+  include:
+    - os: linux
+      before_script:
+        - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.13.2/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+        - go get sigs.k8s.io/kind
+        - kind create cluster
+        - export KUBECONFIG="$(kind get kubeconfig-path --name="1")"
+    - os: windows
+      before_script:
+        - choco install kubernetes-cli -y
+        - go get sigs.k8s.io/kind
+        - kind create cluster
+        - export KUBECONFIG="$(kind get kubeconfig-path --name="1")"
 
 script:
   - kubectl cluster-info
